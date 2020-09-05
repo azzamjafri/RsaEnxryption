@@ -16,9 +16,9 @@ import javax.crypto.NoSuchPaddingException
 @RestController
 class RsaExample {
 
-    private var PUBLIC_KEY_FILE : String = "Public.key"
+    private var PUBLIC_KEY_FILE: String = "Public.key"
 
-    private var PRIVATE_KEY_FILE : String = "Private.key"
+    private var PRIVATE_KEY_FILE: String = "Private.key"
 
     @Throws(Exception::class)
     @GetMapping("/keys")
@@ -62,15 +62,14 @@ class RsaExample {
     }
 
 
-
     @Throws(IOException::class, NoSuchAlgorithmException::class, NoSuchPaddingException::class,
             InvalidKeyException::class, IllegalBlockSizeException::class, BadPaddingException::class)
     private fun decryptData(data: ByteArray?) {
         println("Decryption started")
-        var decryptedData : ByteArray? = null
+        var decryptedData: ByteArray? = null
 
-        val privateKey : PrivateKey = readPrivateKeyFromFile(this.PRIVATE_KEY_FILE)
-        val cipher : Cipher = Cipher.getInstance("RSA")
+        val privateKey: PrivateKey = readPrivateKeyFromFile(this.PRIVATE_KEY_FILE)
+        val cipher: Cipher = Cipher.getInstance("RSA")
         cipher.init(Cipher.DECRYPT_MODE, privateKey)
         decryptedData = cipher.doFinal(data)
 
@@ -79,28 +78,26 @@ class RsaExample {
         println("Decryption completed")
 
 
-
     }
-
 
 
     @Throws(IOException::class)
     private fun readPrivateKeyFromFile(fileName: String): PrivateKey {
 
-        var fis : FileInputStream? = null
-        var ois: ObjectInputStream? = null
+        val fis: FileInputStream?
+        val ois: ObjectInputStream?
 
 
         fis = FileInputStream(File(fileName))
         ois = ObjectInputStream(fis)
         val modulus: BigInteger = ois.readObject() as BigInteger
-        val exponent : BigInteger = ois.readObject() as BigInteger
+        val exponent: BigInteger = ois.readObject() as BigInteger
 
         // Get private key
 
-        val rsaPrivateKeySpec : RSAPrivateKeySpec = RSAPrivateKeySpec(modulus, exponent)
-        val fact : KeyFactory = KeyFactory.getInstance("RSA")
-        val privateKey : PrivateKey = fact.generatePrivate(rsaPrivateKeySpec)
+        val rsaPrivateKeySpec: RSAPrivateKeySpec = RSAPrivateKeySpec(modulus, exponent)
+        val fact: KeyFactory = KeyFactory.getInstance("RSA")
+        val privateKey: PrivateKey = fact.generatePrivate(rsaPrivateKeySpec)
 
         return privateKey
 
@@ -108,17 +105,15 @@ class RsaExample {
     }
 
 
-
-
     private fun encryptData(data: String): ByteArray? {
 
         println("Encryption Started !")
         println("data before encrptyion - " + data)
-        val dataToEncrypt : ByteArray = data.toByteArray()
-        var encryptedData : ByteArray? = null
-        try{
-            val publicKey : PublicKey = readPublicKeyFromFile(this.PUBLIC_KEY_FILE)
-            val cipher : Cipher = Cipher.getInstance("RSA")
+        val dataToEncrypt: ByteArray = data.toByteArray()
+        var encryptedData: ByteArray? = null
+        try {
+            val publicKey: PublicKey = readPublicKeyFromFile(this.PUBLIC_KEY_FILE)
+            val cipher: Cipher = Cipher.getInstance("RSA")
             cipher.init(Cipher.ENCRYPT_MODE, publicKey)
             encryptedData = cipher.doFinal(dataToEncrypt)
 
@@ -126,12 +121,13 @@ class RsaExample {
             println("Encrypted Data - " + encryptedData)
 
 
-        }catch (e : Exception){
-            when(e){
+        } catch (e: Exception) {
+            when (e) {
                 is IOException, is NoSuchAlgorithmException, is NoSuchPaddingException,
                 is InvalidKeyException, is IllegalBlockSizeException, is BadPaddingException -> {
                     e.printStackTrace()
-                }else -> throw e
+                }
+                else -> throw e
             }
         }
 
@@ -142,23 +138,21 @@ class RsaExample {
     }
 
 
-
-
-    @Throws(IOException::class, ClassNotFoundException::class,  NoSuchAlgorithmException::class, InvalidKeySpecException::class)
+    @Throws(IOException::class, ClassNotFoundException::class, NoSuchAlgorithmException::class, InvalidKeySpecException::class)
     private fun readPublicKeyFromFile(fileName: String): PublicKey {
 
-        var fis : FileInputStream? = null
+        var fis: FileInputStream? = null
         var ois: ObjectInputStream? = null
         fis = FileInputStream(File(fileName))
         ois = ObjectInputStream(fis)
         val modulus: BigInteger = ois.readObject() as BigInteger
-        val exponent : BigInteger = ois.readObject() as BigInteger
+        val exponent: BigInteger = ois.readObject() as BigInteger
 
         // Get public key
 
-        val rsaPublicKeySpec : RSAPublicKeySpec = RSAPublicKeySpec(modulus, exponent)
-        val fact : KeyFactory = KeyFactory.getInstance("RSA")
-        val publicKey : PublicKey = fact.generatePublic(rsaPublicKeySpec)
+        val rsaPublicKeySpec: RSAPublicKeySpec = RSAPublicKeySpec(modulus, exponent)
+        val fact: KeyFactory = KeyFactory.getInstance("RSA")
+        val publicKey: PublicKey = fact.generatePublic(rsaPublicKeySpec)
         return publicKey
 
 
@@ -169,7 +163,7 @@ class RsaExample {
         var fos: FileOutputStream? = null
         var oos: ObjectOutputStream? = null
 
-        try{
+        try {
             println("Generating" + fileName + ".....")
 
             fos = FileOutputStream(fileName)
@@ -178,13 +172,13 @@ class RsaExample {
             oos.writeObject(exp)
 
             println(fileName + "Generated successully")
-        }catch (e : Exception){
+        } catch (e: Exception) {
             e.printStackTrace()
-        }finally {
+        } finally {
 
-            if(oos != null) {
+            if (oos != null) {
                 oos.close()
-                if(fos != null){
+                if (fos != null) {
                     fos.close()
                 }
             }
